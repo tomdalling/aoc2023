@@ -1,8 +1,5 @@
 #!/usr/bin/env sbcl --script
 
-(defun pp (x)
-  (format t "~&~S~&" x))
-
 (let ((dayNumber (car (last *posix-argv*))))
-  (load "src/common")
+  (load "src/boot")
   (load (format nil "src/day~a" dayNumber)))
