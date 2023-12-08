@@ -16,3 +16,6 @@
         when (string= key k)
         return (values v t)
         finally (return (values nil nil))))
+
+(defun dict-key-p (key dict)
+  (nth-value 1 (dict-get key dict)))

@@ -29,7 +29,7 @@
 (defun first-and-last (lst)
   (list (enum-first lst) (enum-last lst)))
 
-(->> "src/day1.txt"
+(->> "data/day1.txt"
   (file-read)
   (str-lines)
   (remove-if #'str-empty-p)
