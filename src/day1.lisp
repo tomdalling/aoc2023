@@ -1,52 +1,38 @@
+(defun digit-at (idx line)
+  (let ((first-char (str-char-at idx line)))
+    (if (digit-char-p first-char)
+      first-char
+      (loop for digit from 1 upto 9
+            for word = (word-for-digit digit)
+            for substr = (str-substr idx nil line)
+            when (str-starts-with-p word substr)
+            return (char-for-digit digit)))))
 
-(defconstant words 
-  (dict "one" "1"
-        "two" "2"
-        "three" "3"
-        "four" "4"
-        "five" "5"
-        "six" "6"
-        "seven" "7"
-        "eight" "8"
-        "nine" "9"))
+(defun char-for-digit (digit)
+  (code-char (+ digit (char-code #\0))))
+
+(defun word-for-digit (digit)
+  (format nil "~R" digit))
+
+(defun digits-in (line)
+  (enum-compact
+    (loop for idx below (length line)
+          collect (digit-at idx line))))
 
 (defun calibration-value (line)
   (->> line
-    (pp)
-    (words-to-digits)
-    (map 'list #'identity)
-    (remove-if-not #'digit-char-p)
-    (first-and-last)
-    (join)
-    (parse-integer)
-    (pp)))
-
-(defun first-word-in (line)
-  (->> words
-    (dict-keys)
-    (mapcar #'(lambda (word) (list word (search word line))))
-    (remove-if-not #'llast)
-    (sort-by #'llast)
-    (lfirst)
-    (lfirst)))
-
-(defun words-to-digits (line)
-  (let ((w (first-word-in line)))
-    (if w
-      (words-to-digits ; replace first and recurse
-        (str:replace-first w (gethash w words) line))
-      line))) ; nothing found, so done
+       (digits-in)
+       (first-and-last)
+       (enum-join)
+       (parse-integer)))
 
 (defun first-and-last (lst)
-  (list (lfirst lst) (llast lst)))
-
-(defun join (lst)
-  (format nil "~{~A~^~}" lst))
+  (list (enum-first lst) (enum-last lst)))
 
 (->> "src/day1.txt"
-  (str:from-file)
-  (str:lines)
+  (file-read)
+  (str-lines)
+  (remove-if #'str-empty-p)
   (mapcar #'calibration-value)
-  (pp)
   (reduce '+)
   (pp))

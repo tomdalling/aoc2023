@@ -3,9 +3,12 @@
 (load "quicklisp/setup")
 (ql:quickload "str" :silent t)
 (ql:quickload "arrow-macros" :silent t)
-(ql:quickload "serapeum" :silent t)
 (use-package 'arrow-macros)
-(import 'serapeum:dict)
+
+(load "src/dict")
+(load "src/file")
+(load "src/str")
+(load "src/enum")
 
 ; Common stuff
 
@@ -15,10 +18,6 @@
 
 (defun chars (s)
   (map 'list #'identity s))
-
-(defun dict-keys (d)
-  (loop for k being the hash-key of d
-        collect k))
 
 (defun llast (lst)
   (car (last lst)))
